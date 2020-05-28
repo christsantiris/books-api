@@ -27,7 +27,14 @@ func GetBook(c *fiber.Ctx) {
 	c.JSON(book)
 }
 func NewBook(c *fiber.Ctx) {
-	c.Send("Add Book")
+db := database.DBConn
+var book Book
+book.Title = "The Hobbit"
+book.Author = "Tolkein"
+book.Rating = 10
+
+db.Create(&book)
+c.JSON(book)
 }
 func DeleteBook(c *fiber.Ctx) {
 	c.Send("Delete Book")
