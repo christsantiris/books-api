@@ -28,14 +28,23 @@ func GetBook(c *fiber.Ctx) {
 }
 func NewBook(c *fiber.Ctx) {
 db := database.DBConn
-var book Book
-book.Title = "The Hobbit"
-book.Author = "Tolkein"
-book.Rating = 10
+	var book Book
+	book.Title = "The Hobbit"
+	book.Author = "Tolkein"
+	book.Rating = 10
 
-db.Create(&book)
-c.JSON(book)
+	db.Create(&book)
+	c.JSON(book)
 }
 func DeleteBook(c *fiber.Ctx) {
-	c.Send("Delete Book")
+	id := c.Params("id")
+	db := database.DBConn
+
+	var book Book
+	db.First(&book, id)
+	if book.Title == "" {
+		c.Status(500).Send("No book found for Id")
+	}
+	db.Delete(&book)
+	c.Send("Book successfully deleted")
 }
