@@ -20,7 +20,11 @@ func GetBooks(c *fiber.Ctx) {
 	c.JSON(books)
 }
 func GetBook(c *fiber.Ctx) {
-	c.Send("A Book")
+	id := c.Params("id")
+	db := database.DBConn
+	var book Book
+	db.Find(&book, id)
+	c.JSON(book)
 }
 func NewBook(c *fiber.Ctx) {
 	c.Send("Add Book")
