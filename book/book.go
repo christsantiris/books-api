@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber"
 	"github.com/jinzhu/gorm"
 	"books-api/database"
+	"strconv"
 )
 
 type Book struct {
@@ -19,6 +20,7 @@ func GetBooks(c *fiber.Ctx) {
 	db.Find(&books)
 	c.JSON(books)
 }
+
 func GetBook(c *fiber.Ctx) {
 	id := c.Params("id")
 	db := database.DBConn
@@ -26,6 +28,7 @@ func GetBook(c *fiber.Ctx) {
 	db.Find(&book, id)
 	c.JSON(book)
 }
+
 func NewBook(c *fiber.Ctx) {
 db := database.DBConn
 
@@ -38,6 +41,23 @@ db := database.DBConn
 	db.Create(&book)
 	c.JSON(book)
 }
+
+func UpdateBook(c *fiber.Ctx) {
+	id := c.Params("id")
+	rating := c.Query("rating")
+	_rating, err := strconv.ParseInt(rating, 10, 64)
+	if err != nil {
+		c.Status(503).Send(err)
+		return
+ }
+	db := database.DBConn
+	var book Book
+	db.Find(&book, id)
+	book.Rating = int(_rating)
+	db.Save(&book)
+	c.JSON(book)
+}
+
 func DeleteBook(c *fiber.Ctx) {
 	id := c.Params("id")
 	db := database.DBConn
