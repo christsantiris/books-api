@@ -45,7 +45,7 @@ db := database.DBConn
 func UpdateBook(c *fiber.Ctx) {
 	id := c.Params("id")
 	rating := c.Query("rating")
-	_rating, err := strconv.ParseInt(rating, 10, 64)
+	_rating, err := strconv.Atoi(rating)
 	if err != nil {
 		c.Status(503).Send(err)
 		return
